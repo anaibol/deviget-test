@@ -1,3 +1,13 @@
+## Decisions taken and important notes:
+
+- Used Create React App as a starter
+- Used Container approach to manage state and redux calls
+- Used Redux "ducks" module to simplify redux file structure
+- Used Emotion css in js to be able to easily style components
+- Due to time limitations, responsive design and animations were taken out
+- Proyect was deployed on Netlify: https://deviget-test.netlify.com/
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
