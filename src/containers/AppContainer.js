@@ -6,7 +6,7 @@ import { loadPosts } from '../redux/modules/reddit'
 import App from '../components/App'
 
 function AppContainer({ data, loading, loadPosts }) {
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState();
 
   useEffect(() => {
     loadPosts(page)
