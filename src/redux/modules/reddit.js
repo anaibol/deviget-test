@@ -4,7 +4,9 @@ const LOAD_STARTED = 'reddit/LOAD_STARTED'
 const LOAD_SUCCESS = 'reddit/LOAD_SUCCESS'
 const LOAD_FAIL = 'reddit/LOAD_FAIL'
 
-export default (state = { loaded: false }, action = {}) => {
+const LIMIT = 50
+
+export default (state = { loaded: false, page: 0 }, action = {}) => {
   switch (action.type) {
     case LOAD_STARTED:
       return {
@@ -16,7 +18,7 @@ export default (state = { loaded: false }, action = {}) => {
         ...state,
         loading: false,
         error: null,
-        posts: [...state.posts, action.payload]
+        data: action.payload.data
       };
     case LOAD_FAIL:
       return {
@@ -25,23 +27,29 @@ export default (state = { loaded: false }, action = {}) => {
         error: action.payload.error
       };
 
-    default:
+      default:
       return state
   }
 }
 
-export function loadPosts() {
-  return dispatch => {
-    api.get('top?json')
+export function loadPosts(page = 0) {
+  return (dispatch, state) => {
+    dispatch(loadStarted());
+
+    api
+      .get("top/.json", { params: { limit: LIMIT, page } })
       .then(res => {
-        dispatch(loadSuccess(res.data))
+        dispatch(loadSuccess(res.data, page));
       })
       .catch(err => {
-        dispatch(loadFailure(err.message))
-      })
+        dispatch(loadFailure(err.message, page));
+      });
   }
 }
 
+export const loadStarted = () => ({
+  type: LOAD_STARTED
+});
 
 const loadSuccess = todo => ({
   type: LOAD_SUCCESS,
@@ -49,10 +57,6 @@ const loadSuccess = todo => ({
     ...todo
   }
 })
-
-// const loadStarted = () => ({
-//   type: LOAD_STARTED
-// })
 
 const loadFailure = error => ({
   type: LOAD_FAIL,
