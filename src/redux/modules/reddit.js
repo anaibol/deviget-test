@@ -32,19 +32,19 @@ export default (state = { loaded: false, page: 0 }, action = {}) => {
   }
 }
 
-export function loadPosts(page = 0) {
+export function loadPosts(after) {
   return (dispatch, state) => {
     dispatch(loadStarted());
 
     api
-      .get("top/.json", { params: { limit: LIMIT, page } })
+      .get("top/.json", { params: { limit: LIMIT, after } })
       .then(res => {
-        dispatch(loadSuccess(res.data, page));
+        dispatch(loadSuccess(res.data));
       })
       .catch(err => {
-        dispatch(loadFailure(err.message, page));
+        dispatch(loadFailure(err.message));
       });
-  }
+  };
 }
 
 export const loadStarted = () => ({
