@@ -1,8 +1,10 @@
 import api from '../../utils/api'
 
-const LOAD_STARTED = 'reddit/LOAD_STARTED'
-const LOAD_SUCCESS = 'reddit/LOAD_SUCCESS'
-const LOAD_FAIL = 'reddit/LOAD_FAIL'
+const LOAD_STARTED = 'posts/LOAD_STARTED'
+const LOAD_SUCCESS = 'posts/LOAD_SUCCESS'
+const LOAD_FAIL = 'posts/LOAD_FAIL'
+const MARK_READ = "posts/MARK_READ";
+const DISMISS_POST = "posts/DISMISS_POST";
 
 const LIMIT = 50
 
@@ -25,6 +27,28 @@ export default (state = { loaded: false, page: 0 }, action = {}) => {
         ...state,
         loading: false,
         error: action.payload.error
+      };
+    case MARK_READ:
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          children: state.data.children.map(post => {
+            if (action.payload === post.data.id) {
+              return { ...post, read: true };
+            } else return post;
+          })
+        }
+      };
+    case DISMISS_POST:
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          children: state.data.children.filter(
+            post => action.payload !== post.data.id
+          )
+        }
       };
 
       default:
@@ -51,11 +75,18 @@ export const loadStarted = () => ({
   type: LOAD_STARTED
 });
 
-const loadSuccess = todo => ({
+export const markRead = postId => ({
+  type: MARK_READ,
+  payload: postId
+});
+export const dismissPost = postId => ({
+  type: DISMISS_POST,
+  payload: postId
+});
+
+const loadSuccess = data => ({
   type: LOAD_SUCCESS,
-  payload: {
-    ...todo
-  }
+  payload: data
 })
 
 const loadFailure = error => ({

@@ -6,6 +6,7 @@ import timeSince from "../utils/timeSince";
 
 const ButtonContainer = styled.div`
   flex-direction: row;
+  justify-content: space-between;
 `
 
 const PostContainer = styled(Link)`
@@ -64,6 +65,7 @@ const PostTitle = styled.div`
 const Author = styled.div`
   font-weight: bold;
   margin-right: 15px;
+  margin-left: 15px;
 `;
 
 const LeftPanelContainer = styled.div`
@@ -84,14 +86,18 @@ const Title = styled.h2`
 const UnreadDot = styled.div`
   width: 10px;
   height: 10px;
-  background-color: blue;
+  background-color: #033dfc;
   border-radius: 50%;
   margin-right: 15px;
-`
+  position: absolute;
+  top: 10px;
+  left: 10px;
+`;
 
 const PostsContainer = styled.div`
   overflow-y: auto;
-  max-height: calc(100vh - 22px);
+  max-height: 100vh;
+  position: relative;
 `;
 
 const Chevron = styled.div`
@@ -107,7 +113,16 @@ const DissmissText = styled.div`
   margin-left: 5px;
 `;
 
-export default function LeftPanel({ loading, data, nextPage, previousPage }) {
+const Button = styled.button`
+  background-color: transparent;
+  color: white;
+  padding: 10px;
+  border: 1px solid white;
+  border-radius: 5px;
+  margin: 5px;
+`;
+
+export default function LeftPanel({ loading, data, markRead, dismissPost, nextPage, previousPage }) {
   return (
     <LeftPanelContainer>
       {loading && (
@@ -121,13 +136,20 @@ export default function LeftPanel({ loading, data, nextPage, previousPage }) {
       {!loading && (
         <div>
           <Title>Reddit posts</Title>
+          <ButtonContainer>
+            <Button onClick={previousPage}>previous page</Button>
+            <Button onClick={nextPage}>next page</Button>
+          </ButtonContainer>
           <PostsContainer>
             {data &&
               data.children.map(post => (
-                <PostContainer to={post.data.id} key={post.data.id}>
+                <PostContainer
+                  to={post.data.id}
+                  key={post.data.id}
+                  onClick={() => markRead(post.data.id)}
+                >
                   <PostHeader>
-                    {post.unread && <UnreadDot />}
-                    <UnreadDot />
+                    {!post.read && <UnreadDot />}
                     <Author>{post.data.author}</Author>
                     <Date>
                       <ion-icon name="time-outline"></ion-icon>
@@ -147,7 +169,7 @@ export default function LeftPanel({ loading, data, nextPage, previousPage }) {
                     </Chevron>
                   </PostContent>
                   <PostFooter>
-                    <Dissmiss>
+                    <Dissmiss onClick={() => dismissPost(post.data.id)}>
                       <ion-icon name="close-circle-outline"></ion-icon>
                       <DissmissText>Dismiss post</DissmissText>
                     </Dissmiss>
@@ -159,10 +181,6 @@ export default function LeftPanel({ loading, data, nextPage, previousPage }) {
                 </PostContainer>
               ))}
           </PostsContainer>
-          <ButtonContainer>
-            <button onClick={previousPage}>previous page</button>
-            <button onClick={nextPage}>next page</button>
-          </ButtonContainer>
         </div>
       )}
     </LeftPanelContainer>

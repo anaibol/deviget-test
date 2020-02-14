@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux'
 
-import reddit from './modules/reddit'
+import posts from './modules/posts'
 
 export default combineReducers({
-  reddit
+  posts
 })

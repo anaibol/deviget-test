@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 
-import { loadPosts } from '../redux/modules/reddit'
+import { loadPosts, markRead, dismissPost } from "../redux/modules/posts";
 
 import App from '../components/App'
 
-function AppContainer({ data, loading, loadPosts }) {
+function AppContainer({ data, loading, loadPosts, markRead, dismissPost }) {
   const [page, setPage] = useState();
 
   useEffect(() => {
-    loadPosts(page)
+    loadPosts(page);
   }, [page]);
 
   const nextPage = () => setPage(data.after);
@@ -21,11 +21,13 @@ function AppContainer({ data, loading, loadPosts }) {
       loading={loading}
       nextPage={nextPage}
       previousPage={previousPage}
+      markRead={markRead}
+      dismissPost={dismissPost}
     />
   );
 }
 
 export default connect(
-  state => ({ data: state.reddit.data, loading: state.reddit.loading }),
-  { loadPosts }
+  state => ({ data: state.posts.data, loading: state.posts.loading }),
+  { loadPosts, markRead, dismissPost }
 )(AppContainer);

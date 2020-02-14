@@ -15,8 +15,14 @@ const Main = styled.main`
   flex-direction: row;
 `;
 
-export default function App({ loading, data, nextPage, previousPage }) {
-  console.log(data);
+export default function App({
+  loading,
+  data,
+  nextPage,
+  previousPage,
+  markRead,
+  dismissPost
+}) {
   return (
     <Main>
       <Router>
@@ -25,15 +31,15 @@ export default function App({ loading, data, nextPage, previousPage }) {
           data={data}
           nextPage={nextPage}
           previousPage={previousPage}
+          markRead={markRead}
+          dismissPost={dismissPost}
         />
         <Switch>
           <Route path="/:postId">
-            <RightPanel
-              data={data}
-            />
+            <RightPanel data={data} />
           </Route>
         </Switch>
       </Router>
     </Main>
   );
-  }
+}
